@@ -1,18 +1,15 @@
-import React, {useRef} from 'react'
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { jsx } from '@emotion/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt, faThumbtack } from '@fortawesome/free-solid-svg-icons'
-
+import Text from './Text'
 import {
     taskSlip,
-    iconContainer,
-    textContainer
 } from '../style'
 
-export default ({ text, id, setTaskList}) => {
-    const textRef = useRef()
-    // const titleRef = useRef()
+export default ({ text, id, setTaskList, title}) => {
+    // const textRef = useRef()
+    // const abcd = useText(true, () => { }, setTaskList,id, true, text, title)
     
     function  deleteElement(elementId) {
         setTaskList(taskList => {
@@ -21,13 +18,13 @@ export default ({ text, id, setTaskList}) => {
             return newTaskList
         })
     }
-    function updateTask(elementId){
-        setTaskList(taskList => {
-            const newTaskList = {...taskList}
-            newTaskList[elementId].text = textRef.current.textContent
-            return newTaskList
-        })
-    }
+    // function updateTask(elementId){
+    //     setTaskList(taskList => {
+    //         const newTaskList = {...taskList}
+    //         newTaskList[elementId].text = textRef.current.textContent
+    //         return newTaskList
+    //     })
+    // }
 
     function pinElement(elementId) {
         setTaskList(taskList => {
@@ -46,10 +43,7 @@ export default ({ text, id, setTaskList}) => {
                 </i>
                 <i onClick={() => pinElement(id)}><FontAwesomeIcon icon={faThumbtack} size={'1x'} /></i>
             </div>
-            {/* <div contentEditable="true" css={textContainer} onBlur={() => updateTask(id)}>
-
-            </div> */}
-            <div contentEditable="true" css={textContainer} onBlur={() => updateTask(id)} ref={textRef}>{text}</div>
+            <Text showField setShowField={() => { }} setTaskList={setTaskList} elementId={id} hideButton initialTask={text} initialTitle={title}/>
         </div>
     )
 }

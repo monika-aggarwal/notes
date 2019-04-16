@@ -1,8 +1,6 @@
-import React from 'react'
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { jsx } from '@emotion/core'
 import { 
-    taskSlip,
     taskListContainer,
     slipContainer,
     categoryTitle,
@@ -15,8 +13,8 @@ const taskTemplate = ({ title, list, setTaskList}) => {
             <h1 css={categoryTitle}>{title}</h1>
             <div css={slipContainer}>
                 {
-                    Object.values(list).map(({ text, id }) => {
-                        return <Slip text={text} key={id} id={id} setTaskList={setTaskList} />
+                    Object.values(list).map(({ text,title, id }) => {
+                        return <Slip text={text} key={id} id={id} title={title} setTaskList={setTaskList} />
                     })
                 }
             </div>

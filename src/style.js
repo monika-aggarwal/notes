@@ -154,8 +154,8 @@ export const highestDiv = css`
     justify-content: center;
     padding: 20px;
     width: 100%;
-    .backdrop {
+    /* .backdrop {
         ${backdrop};
-    }
+    } */
 `
 
