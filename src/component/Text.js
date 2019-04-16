@@ -1,64 +1,90 @@
-import React, { useState } from 'react'
+import React, { useReducer, useEffect } from 'react'
 /** @jsx jsx */
 import {jsx } from "@emotion/core";
 import {
-    inputContainer,
     fieldCont,
-    parentInputCont,
     buttonCont,
     close,
     backdrop
 } from '../style'
 
-const Text = ({showField, setShowField, setTaskList, elementId, hideButton, initialTask, initialTitle}) => {
-    const [task, setTask] = useState(initialTask || '')
-    const [title, setTitle] = useState(initialTitle || '')
-    const [inputFocus, setInputFocus] = useState(false)
+const initialState = {
+    task: '',
+    title: '',
+    inputFocus: false
+}
+const reducer = (state, { type, payload }) => {
+    let newState
+    switch (type) {
+        case 'SET_TASK':
+            newState =  { ...state, ...{ task: payload } }
+            break
+        case 'SET_TITLE':
+            newState =  { ...state, ...{ title: payload } }
+            break
+        case 'SET_FOCUS':
+            newState =  { ...state, ...{ inputFocus: payload } }
+            break
+    }
+    return newState
+}
 
+const Text = ({className,showField, setShowField, setTaskList, elementId, hideButton, initialTask, initialTitle}) => {
+    const [currentState, dispatch] = useReducer(reducer, initialState)
     function addTask(elementId) {
-        if (!task) {
-            setInputFocus(false)
+        if (!currentState.task) {
+            dispatch({type: 'SET_FOCUS', payload: false})
             setShowField(false)
             return
         }
         if (elementId) {
             setTaskList(taskList => {
                 const newTaskList = { ...taskList }
-                newTaskList[elementId].text = task
-                newTaskList[elementId].title = title
+                newTaskList[elementId].text = currentState.task
+                newTaskList[elementId].title = currentState.title
                 return newTaskList
             })
         } else {
             const time = new Date().getTime().toString()
             setTaskList(taskList => {
-                const newTaskList = { ...taskList, ...{ [time]: { text: task, id: time, title } } }
+                const newTaskList = { ...taskList, ...{ [time]: { text: currentState.task, id: time, title: currentState.title } } }
                 return newTaskList
             })
-            setTask('')
-            setTitle('')
+            dispatch({ type: 'SET_TASK', payload: ''})
+            dispatch({ type: 'SET_TITLE', payload: '' })
         }
-        setInputFocus(false)
+        dispatch({ type: 'SET_FOCUS', payload: false })
         setShowField(false)
     }
+    useEffect(() => {
+        console.log("component did mount")
+        dispatch({
+            type: 'SET_TASK',
+            payload: initialTask || ''
+        })
+        dispatch({
+            type: 'SET_TITLE',
+            payload: initialTitle || ''
+        })
+    },[])
     return (
         <React.Fragment>
-            <span css={backdrop} className={`${inputFocus ? 'show' : ''}`} onClick={() => { addTask(elementId) }}></span>
-            <div css={parentInputCont}>
-                <div css={inputContainer}>
-                    {
-                        showField && (
-                            <div css={fieldCont}>
-                                <input placeholder='Title' value={title} onChange={(e) => { setTitle(e.target.value) }} onFocus={() => { 
-                            setInputFocus(true)
-                            setShowField(true) }}/>
-                            </div>
-                        )
-                    }
-                    <div css={fieldCont}>
-                        <textarea type='text' value={task} placeholder={'Take a note...'} onFocus={() => { 
-                            setInputFocus(true)
-                            setShowField(true) }} onChange={(e) => { setTask(e.target.value) }} />
-                    </div>
+            <span css={backdrop} className={`${currentState.inputFocus ? 'show' : ''}`} onClick={() => { addTask(elementId) }}></span>
+            <div className={className}>
+                {
+                    showField && (
+                        <div css={fieldCont}>
+                            <input placeholder='Title' value={currentState.title} onChange={(e) => { dispatch({ type: 'SET_TITLE', payload: e.target.value }) }} onFocus={() => { 
+                                dispatch({ type: 'SET_FOCUS', payload: true })
+                        setShowField(true) }}/>
+                        </div>
+                    )
+                }
+                <div css={fieldCont}>
+                    <textarea type='text' value={currentState.task} placeholder={'Take a note...'} onFocus={() => { 
+                        dispatch({ type: 'SET_FOCUS', payload: true })
+                        setShowField(true)
+                    }} onChange={(e) => { dispatch({ type: 'SET_TASK', payload: e.target.value}) }} />
                 </div>
                 {
                     (!hideButton && showField) && (<div css={buttonCont}>

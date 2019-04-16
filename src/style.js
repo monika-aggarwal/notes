@@ -56,7 +56,6 @@ export const taskListContainer = css`
         `
 
 export const fieldCont = css`
-    width: 100%;
     input,textarea {
         width: 100%;
         font-size: 14px;
@@ -65,7 +64,6 @@ export const fieldCont = css`
         padding: 5px;
     }
     input {
-        /* display: none; */
         margin-bottom: 10px;
     }
     textarea {
@@ -73,11 +71,14 @@ export const fieldCont = css`
     }
 `
 
-export const inputContainer = css`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    `
+export const slipCont = css`
+    ${fieldCont};
+    textarea {
+        height: 125px;
+    }
+`
+
+
 export const parentInputCont = css`
     width: 50%;
     display: flex;
